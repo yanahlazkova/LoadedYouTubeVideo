@@ -27,4 +27,4 @@ def open_window_error():
 
     app.mainloop()
     
-open_window_error()
+# open_window_error()

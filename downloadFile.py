@@ -16,9 +16,12 @@ def show_data_video(ref):
     yt = YouTube(ref)
     title = yt.title
     author = yt.author
-    video = {"title": title, "author": author}
+    image = yt.thumbnail_url
+    video = {"title": title, "author": author, "image": image}
     print("Title: ", yt.title)
     print("Video: ", yt.views)
     print("Url miniature: ", yt.thumbnail_url)
     print("Author: ", yt.author)
     return video
+
+# show_data_video("https://youtu.be/tNSjC0sZiy8")
