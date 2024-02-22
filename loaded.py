@@ -1,8 +1,18 @@
 from pytube import YouTube
 
-# link = "https://youtu.be/tNSjC0sZiy8"
+link = "" # "https://youtu.be/tNSjC0sZiy8"
+yt = ""
+def download_video():
+    yt = YouTube(link)
+    
+    # print("Video: ", dir(yt))
+    #  print("ytcfg: ", yt.ytcfg)
+    yt.streams.get_highest_resolution().download("videos")
+     
+# download_video(link)
 
-def download_video(ref):
+def show_data_video(ref):
+    link = ref
     yt = YouTube(ref)
     title = yt.title
     author = yt.author
@@ -11,10 +21,4 @@ def download_video(ref):
     print("Video: ", yt.views)
     print("Url miniature: ", yt.thumbnail_url)
     print("Author: ", yt.author)
-    
-    # print("Video: ", dir(yt))
-    #  print("ytcfg: ", yt.ytcfg)
-    #  yt.streams.get_highest_resolution().download("videos")
     return video
-     
-# download_video(link)
