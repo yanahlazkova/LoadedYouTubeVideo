@@ -1,5 +1,3 @@
-# from tkinter import *
-# # from tkinter import ttk
 import customtkinter
 import tkinter
 import downloadFile
@@ -7,26 +5,42 @@ import windowError
 
 
 # получает введенный линк и вызывает функцию вывода данных о загружаемом видео
-def output_data():
+def show_video_data():
     # link_video = input_link.configure(textvariable="https://youtu.be/tNSjC0sZiy8")
     
+
     link_video = input_link.get()
     if link_video == "":
-        windowError.open_window_error()
+        windowError.open_window_error("You didn't enter anything")
     else:
-        video = downloadFile.show_data_video(link_video)
-        video_name.configure(state="normal")
-        video_name.insert("1.0", video["title"])
-        video_name.configure(state="disabled")
         
-        # video_name.update_idletasks()
-        video_autor.configure(text=video["author"])
-        print(video["image"])
-        video_image = customtkinter.CTkLabel(app, image=video["image"], width=50,
-                                     compound="bottom")
-        video_image.grid(row=7, column=0,)
-        # video_image.configure(image=video["image"])
+        video = downloadFile.show_data_video(link_video)
+        # print("video: ", video)
+        if video:
+            video_name.configure(state="normal")
+            video_name.insert("1.0", video["title"])
+            video_name.configure(state="disabled")
+          
+            video_author.configure(text=video["author"])
+            
+            button_download.configure(state="normal", command=download)
+            
+            # print("Download Complete: ", button_download.cget("command"))            
+            
 
+          
+          # video_image = customtkinter.CTkLabel(app, image=video["image"], width=50,
+          #                              compound="bottom")
+          # video_image.grid(row=7, column=0,)
+          # video_image.configure(image=video["image"])
+        else:
+            print("ERROR.....", video)
+          
+def download():
+    link = input_link.get()
+    print("LINK: ", link)
+    is_download = downloadFile.download_video(link)
+    print("Download Complete: ", is_download)   
 
 customtkinter.set_ctk_parent_class(tkinter.Tk)
 
@@ -43,38 +57,40 @@ app.title("Dounload from YouTube")
 app.geometry("400x400")
 
 text_link = customtkinter.CTkLabel(app, text="URL: ") # text_color="lightblue"
-text_link.grid(row=0, column=0, padx=20, pady=20)
+text_link.grid(row=0, column=0, padx=10, pady=20, sticky="e")
 
-
-input_link = customtkinter.CTkEntry(app, placeholder_text="Enter video link ")
-input_link.grid(row=0, column=1, padx=20, sticky="ew", columnspan=2)
+url_var = tkinter.StringVar()
+input_link = customtkinter.CTkEntry(app, placeholder_text="Enter video link ", textvariable=url_var)
+input_link.grid(row=0, column=1, padx=10, sticky="ew", columnspan=2)
 app.columnconfigure(1, weight=1)
 
 text_title = customtkinter.CTkLabel(app, text="Name: ") #, text_color="blue"
-text_title.grid(row=1, column=0, padx=20)
+text_title.grid(row=1, column=0, padx=10, pady=20, sticky="e")
 
 text_autor = customtkinter.CTkLabel(app, text="Autor: ") #, text_color="blue"
-text_autor.grid(row=4, column=0, padx=20, pady=20)
+text_autor.grid(row=4, column=0, padx=10, pady=20, sticky="e")
 
-button_OK = customtkinter.CTkButton(app, text="OK", width=10, command=output_data)
-button_OK.grid(row=0, column=3, padx=20, sticky="e")
+button_OK = customtkinter.CTkButton(app, text="OK", width=10, command=show_video_data)
+button_OK.grid(row=0, column=3, padx=10, sticky="e")
 
-button_download = customtkinter.CTkButton(app, text="Download")
 
 video_name = customtkinter.CTkTextbox(app, text_color="lightblue", 
                                       activate_scrollbars=False, 
                                       state="disabled", 
-                                    #   wrap="none", 
+                                      wrap="word", 
                                       height=50, 
                                       width=300)
-video_name.grid(row=1, column=1, padx=20, sticky="nsew", columnspan=4, rowspan=2)
+video_name.grid(row=1, column=1, padx=10, pady=20, sticky="w", columnspan=4, rowspan=2)
 
-video_autor = customtkinter.CTkLabel(app, text="", text_color="lightblue")
-video_autor.grid(row=4, column=1, padx=20, sticky="w", columnspan=4)
+video_author = customtkinter.CTkLabel(app, text="", text_color="lightblue")
+video_author.grid(row=4, column=1, padx=10, sticky="w", columnspan=4)
 
-text_image = customtkinter.CTkLabel(app, text="Video image: ")
-text_image.grid(row=6, column=0, padx=20)
+# text_image = customtkinter.CTkLabel(app, text="Video image: ")
+# text_image.grid(row=6, column=0, padx=10)
 
+button_download = customtkinter.CTkButton(app, text="Download", state="disabled")
+button_download.grid(row=7, column=1, padx=20, pady=20, columnspan=2)
+app.columnconfigure(0, weight=1)
 
 
 # video = loaded.download_video("https://youtu.be/tNSjC0sZiy8") # ("https://youtu.be/tNSjC0sZiy8")

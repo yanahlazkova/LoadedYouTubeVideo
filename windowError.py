@@ -3,7 +3,7 @@ import tkinter
 
 
 
-def open_window_error():
+def open_window_error(text_error):
     def close_app():
         app.destroy()
     
@@ -15,7 +15,7 @@ def open_window_error():
     app.title("Error...")
     app.geometry("250x100")
 
-    text_error = customtkinter.CTkLabel(app, text="Enter correct url...", 
+    text_error = customtkinter.CTkLabel(app, text=text_error, 
                                         text_color="red", 
                                         font=("", 14))
     text_error.grid(row=0, column=0, padx=20, pady=20)
