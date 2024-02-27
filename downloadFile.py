@@ -6,12 +6,12 @@ import windowError
 def download_video(link):
     
     try:
-        yt = YouTube(link)
-        yt.streams.get_highest_resolution().download("videos")
-        # is_download = download_video(link)
-        # return True # Download Complete!
-    except:
-        windowError("YouTube link is invalid")
+        yt = YouTube(link, use_oauth=True, allow_oauth_cache=True)
+        is_download = yt.streams.get_highest_resolution().download("videos")
+        
+        return True # Download Complete!
+    except Exception as e:
+        windowError.open_window_error(e)
      
 
 def show_data_video(link):
