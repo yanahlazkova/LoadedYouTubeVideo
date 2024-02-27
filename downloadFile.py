@@ -1,21 +1,22 @@
 from pytube import YouTube
 import windowError
 
-# link = "https://youtu.be/tNSjC0sZiy8"
-
+link = ""#"https://youtu.be/tNSjC0sZiy8"
+yt = ""
 def download_video(link):
-    
     try:
+        
         yt = YouTube(link)
-        yt.streams.get_highest_resolution().download("videos")
-        # is_download = download_video(link)
-        # return True # Download Complete!
+        is_download = yt.streams.get_highest_resolution().download("videos")
+        # download_video(link)
+        return is_download # Download Complete!
     except:
-        windowError("YouTube link is invalid")
+        windowError.open_window_error("YouTube link is invalid")
      
 
-def show_data_video(link):
+def show_data_video(ref):
     try:
+        link = ref
         yt = YouTube(link)
         
         title = yt.title
