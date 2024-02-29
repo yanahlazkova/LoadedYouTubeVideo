@@ -2,7 +2,19 @@ import customtkinter
 import tkinter
 import downloadFile
 import windowError
+import urllib.request
+import io
+from PIL import Image, ImageTk
 
+# вывод приложение по центру экрана
+def center_window(window, width, height):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 2
+    
+    window.geometry(f"{width}x{height}+{x}+{y}")
 
 # получает введенный линк и вызывает функцию вывода данных о загружаемом видео
 def show_video_data():
@@ -23,22 +35,26 @@ def show_video_data():
           
             video_author.configure(text=video["author"])
             
-            button_download.configure(state="normal", command=download)
+            button_download.configure(state="normal")
             
-            # print("Download Complete: ", button_download.cget("command"))            
             
+            # вывод картинки
+            image_url = video["image"]
+            response = urllib.request.urlopen(image_url)
+            image_data = response.read()
+            image = Image.open(io.BytesIO(image_data))
+            image.thumbnail((250,250))
+            # image = image.resize((100))
+            photo_image = ImageTk.PhotoImage(image)
 
-          
-          # video_image = customtkinter.CTkLabel(app, image=video["image"], width=50,
-          #                              compound="bottom")
-          # video_image.grid(row=7, column=0,)
-          # video_image.configure(image=video["image"])
+            video_image.configure(image=photo_image)
+
+
         else:
             print("ERROR.....", video)
           
 def download():
     link = input_link.get()
-    print("LINK: ", link)
     is_download = downloadFile.download_video(link)
     print("Download Complete: ", is_download)   
 
@@ -54,7 +70,11 @@ customtkinter.set_default_color_theme("./my_files/blue.json")
 
 app = customtkinter.CTk()
 app.title("Dounload from YouTube")
-app.geometry("400x400")
+# app.geometry("400x400")
+app_width = 400
+app_height = 400
+
+center_window(app, app_width, app_height)
 
 text_link = customtkinter.CTkLabel(app, text="URL: ") # text_color="lightblue"
 text_link.grid(row=0, column=0, padx=10, pady=20, sticky="e")
@@ -64,15 +84,11 @@ input_link = customtkinter.CTkEntry(app, placeholder_text="Enter video link ", t
 input_link.grid(row=0, column=1, padx=10, sticky="ew", columnspan=2)
 app.columnconfigure(1, weight=1)
 
-text_title = customtkinter.CTkLabel(app, text="Name: ") #, text_color="blue"
-text_title.grid(row=1, column=0, padx=10, pady=20, sticky="e")
-
-text_autor = customtkinter.CTkLabel(app, text="Autor: ") #, text_color="blue"
-text_autor.grid(row=4, column=0, padx=10, pady=20, sticky="e")
-
 button_OK = customtkinter.CTkButton(app, text="OK", width=10, command=show_video_data)
 button_OK.grid(row=0, column=3, padx=10, sticky="e")
 
+text_title = customtkinter.CTkLabel(app, text="Name: ") #, text_color="blue"
+text_title.grid(row=1, column=0, padx=10, sticky="e")
 
 video_name = customtkinter.CTkTextbox(app, text_color="lightblue", 
                                       activate_scrollbars=False, 
@@ -80,16 +96,23 @@ video_name = customtkinter.CTkTextbox(app, text_color="lightblue",
                                       wrap="word", 
                                       height=50, 
                                       width=300)
-video_name.grid(row=1, column=1, padx=10, pady=20, sticky="w", columnspan=4, rowspan=2)
+video_name.grid(row=1, column=1, padx=10, sticky="w", columnspan=4, rowspan=2)
+
+text_autor = customtkinter.CTkLabel(app, text="Autor: ") #, text_color="blue"
+text_autor.grid(row=3, column=0, padx=10, sticky="e")
 
 video_author = customtkinter.CTkLabel(app, text="", text_color="lightblue")
-video_author.grid(row=4, column=1, padx=10, sticky="w", columnspan=4)
+video_author.grid(row=3, column=1, padx=10, sticky="w", columnspan=4)
 
-# text_image = customtkinter.CTkLabel(app, text="Video image: ")
-# text_image.grid(row=6, column=0, padx=10)
+text_image = customtkinter.CTkLabel(app, text="Image: ")
+text_image.grid(row=6, column=0, padx=10, sticky="e")
 
-button_download = customtkinter.CTkButton(app, text="Download", state="disabled")
-button_download.grid(row=7, column=1, padx=20, pady=20, columnspan=2)
+video_image = customtkinter.CTkLabel(app, text="", compound="bottom")
+video_image.grid(row=6, column=1, padx=20, pady=20, columnspan=4)
+app.columnconfigure(1, weight=1)
+
+button_download = customtkinter.CTkButton(app, text="Download", state="disabled", command=download)
+button_download.grid(row=8, column=1, padx=20, pady=20, columnspan=2)
 app.columnconfigure(0, weight=1)
 
 
